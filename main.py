@@ -137,3 +137,7 @@ for i in range(0, len(lastname_list)):
                      email_list[i]])
 
 pprint(new_list)
+
+with open("phonebook.csv", "w", encoding='utf-8') as f:
+  datawriter = csv.writer(f, delimiter=',')
+  datawriter.writerows(new_list)
