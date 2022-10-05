@@ -2,7 +2,7 @@ from pprint import pprint
 import csv
 import re
 
-positions = 'lastname,firstname,surname,organization,position,phone,email'
+# positions = 'lastname,firstname,surname,organization,position,phone,email'
 
 with open("phonebook_raw.csv", encoding="utf-8") as file:
     rows = csv.reader(file, delimiter=",")
@@ -130,13 +130,33 @@ get_org(contact_list)
 get_position(contact_list)
 get_email(contact_list)
 
-new_list = [['lastname','firstname','surname','organization','position','phone','email']]
+temp_dict = {}
 
 for i in range(0, len(lastname_list)):
-    new_list.append([lastname_list[i], firstname_list[i], surname_list[i], org_list[i], position_list[i], phone_list[i],
-                     email_list[i]])
+    last_first_name = f'{lastname_list[i]} {firstname_list[i]}'
+    if last_first_name not in temp_dict:
+        temp_dict[f'{lastname_list[i]} {firstname_list[i]}'] = [surname_list[i], org_list[i], position_list[i], phone_list[i], email_list[i]]
+    else:
+        if temp_dict[last_first_name][0] == "" and surname_list[i] != "":
+            temp_dict[last_first_name][0] = surname_list[i]
+        if temp_dict[last_first_name][1] == "" and org_list[i] != "":
+            temp_dict[last_first_name][1] = org_list[i]
+        if temp_dict[last_first_name][2] == "" and position_list[i] != "":
+            temp_dict[last_first_name][2] = position_list[i]
+        if temp_dict[last_first_name][3] == "" and phone_list[i] != "":
+            temp_dict[last_first_name][3] = phone_list[i]
+        if temp_dict[last_first_name][4] == "" and email_list[i] != "":
+            temp_dict[last_first_name][4] = email_list[i]
 
-pprint(new_list)
+# pprint(temp_dict)
+
+new_list = [['lastname','firstname','surname','organization','position','phone','email']]
+
+for i in temp_dict:
+    result = [i.split(" ")[0], i.split(" ")[1], temp_dict[i][0], temp_dict[i][1], temp_dict[i][2], temp_dict[i][3], temp_dict[i][4]]
+    new_list.append(result)
+
+# pprint(new_list)
 
 with open("phonebook.csv", "w", encoding='utf-8') as f:
   datawriter = csv.writer(f, delimiter=',')
